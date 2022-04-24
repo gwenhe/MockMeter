@@ -1,0 +1,5 @@
+mysql:
+  server: 127.0.0.1:3306
+  db: mock
+  user: root
+  password: guowenhe
