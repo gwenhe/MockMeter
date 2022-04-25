@@ -2,6 +2,7 @@ import random
 import string
 import os
 import datetime
+import json
 from fastapi import APIRouter, Depends, File, UploadFile, Form
 from fastapi.responses import Response, JSONResponse
 from app.dependencies import get_request, get_db
@@ -10,6 +11,7 @@ from app import crud
 from app.schemas import model_schema
 from app.core.config import script_dir, file_dir, share_dir, temp_script
 from app.schemas.mock import RequestSchema, ResponseSchema
+from app.utils import data_handle
 
 router = APIRouter(
     prefix="/interface",
@@ -18,8 +20,15 @@ router = APIRouter(
 )
 
 
-async def save_file(file: UploadFile, path: str, file_name: str = None)->str:
+async def save_file(file: UploadFile, path: str, file_name: str = None, variable: str = None) -> str:
     contents = await file.read()
+    if variable:
+        contents = contents.decode('utf-8')
+        variable = json.loads(variable)
+        for i in variable:
+            pattern = '{' + i + '}'
+            contents = data_handle.replace_str(contents, pattern, variable[i])
+        contents = contents.encode('utf-8')
     if file_name is None:
         random_str = random.sample(string.ascii_letters, 20)
         file_name = ''.join(random_str) + '.py'
@@ -56,11 +65,12 @@ async def interface_create(db: Session = Depends(get_db), project_id: int = Form
 
 @router.post('/set_script')
 async def set_script(db: Session = Depends(get_db), file: UploadFile = File(...), project_id: int = Form(...),
-                     interface_path: str = Form(...), effective_time: int = Form(default=10)):
+                     interface_path: str = Form(...), variable: str = Form(default=None),
+                     effective_time: int = Form(default=10)):
     interface = await crud.interface.get_interface_info(db, project_id, interface_path)
     if interface is None:
         return JSONResponse(content={'error_code': 404, 'error_msg': '不存在的api'}, status_code=404)
-    file_name = await save_file(file, temp_script)
+    file_name = await save_file(file, temp_script, variable=variable)
     expiration_time = datetime.datetime.now() + datetime.timedelta(minutes=effective_time)
     db_obj = await crud.script.create(db, model_schema.ScriptDB(
         interface_id=interface.id,
