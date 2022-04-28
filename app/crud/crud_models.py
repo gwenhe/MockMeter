@@ -1,5 +1,5 @@
 import datetime
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Union, List
 from sqlalchemy.orm import Session
 from app.crud.base import CRUDBase
 from sqlalchemy.sql import select, update, delete, insert
@@ -24,7 +24,7 @@ interface = CRUDInterface(Interface, InterfaceDB)
 
 class CRUDScript(CRUDBase[Script, ScriptDB]):
 
-    async def get_script(self, db: Session, interface_id) -> []:
+    async def get_script(self, db: Session, interface_id) -> List:
         stmt = select(self.model).where(
             Script.interface_id == interface_id, Script.expiration_time >= datetime.datetime.now()
         )
