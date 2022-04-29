@@ -1,0 +1,9 @@
+"""
+设置jc-1004授信返回结果
+vx001002001968481984424710144 {result}
+"""
+
+data = request.json_dict['data']
+if data['ORDERNO'] == 'vx001002001968481984424710144':
+    # 设置授信结果
+    response.body['data']['BALZESTATUS2'] = 'M'

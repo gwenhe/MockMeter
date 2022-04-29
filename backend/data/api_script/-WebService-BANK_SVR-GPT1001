@@ -1,0 +1,12 @@
+import requests
+
+url = 'http://192.168.0.224:19081/api/financial/holding/sm2/encryptAndSign'
+
+body = response.body
+headers = {
+    'Content-Type': 'application/xml',
+    'simple-auth': '$2a$10$hI0T.7oXBq26YykJgBTMjeFRMQ9GDGPwdnPneFYw3Py/1KWkupcze'
+}
+res = requests.post(url=url, data=body.encode('utf-8'), headers=headers)
+data = res.text
+response.body = data

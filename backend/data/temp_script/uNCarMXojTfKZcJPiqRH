@@ -1,0 +1,10 @@
+"""
+设置jc-1004授信返回结果
+vx001002001968472363643441152 {result}
+"""
+
+data = request.json_dict['data']
+if data['ORDERNO'] == 'vx001002001968472363643441152':
+    # 设置授信结果
+    response.body['data']['RESULT'] = '-1'
+    response.body['data']['BALZESTATUS2'] = 'A'
