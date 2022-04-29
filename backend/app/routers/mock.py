@@ -4,8 +4,8 @@ from fastapi.responses import Response, JSONResponse
 from app.dependencies import get_request, get_db
 from sqlalchemy.orm import Session
 from app import crud
-from core import exec_python_script
-from core import script_dir
+from app.core.execution import exec_python_script
+from app.core.config import script_dir
 from app.schemas.mock import RequestSchema, ResponseSchema
 from app.schemas import model_schema
 import os

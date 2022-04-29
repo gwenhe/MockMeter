@@ -5,7 +5,7 @@ from app.crud.base import CRUDBase
 from sqlalchemy.sql import select
 from app.models import Interface, Record, Script
 from app.schemas.model_schema import InterfaceDB, ScriptDB, RecordDB
-from core import temp_script
+from app.core.config import temp_script
 import os
 
 

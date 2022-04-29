@@ -9,7 +9,7 @@ from app.dependencies import get_db
 from sqlalchemy.orm import Session
 from app import crud
 from app.schemas import model_schema
-from core import script_dir, file_dir, share_dir, temp_script
+from app.core.config import script_dir, file_dir, share_dir, temp_script
 from app.utils import data_handle
 
 router = APIRouter(

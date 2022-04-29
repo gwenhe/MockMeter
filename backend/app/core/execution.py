@@ -1,7 +1,7 @@
 import sys
 from fastapi import BackgroundTasks
-from core import data_dir
-from core import HTTPExceptionMock
+from app.core.config import data_dir
+from app.core.exception import HTTPExceptionMock
 from app.schemas.mock import RequestSchema, ResponseSchema
 
 sys.path.append(data_dir)
