@@ -1,17 +1,12 @@
 import uvicorn
+from common import initialization
+from common.ext import app
 
-from app.routers import mock, interface
+from apps.project import routers as project
+# from apps.interface import routers as interface
 
-from fastapi import FastAPI
+app.include_router(project.router)
+# app.include_router(interface.router)
 
-app = FastAPI()
-app.include_router(mock.router)
-app.include_router(interface.router)
-
-
-@app.get("/")
-async def root():
-    return {"message": "Hello MockMeter!"}
-
-# if __name__ == "__main__":
-#     uvicorn.run(app, host="0.0.0.0", port=8000)
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

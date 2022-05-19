@@ -1,5 +1,12 @@
+# 腾讯云
 mysql:
-  server: 127.0.0.1:3306
-  db: mock
-  user: root
-  password: guowenhe
+  server: 101.43.235.110:3306
+  db: mockmeter
+  user: mockmeter
+  password: mockmeter
+# 本机
+#mysql:
+#  server: 127.0.0.1:3306
+#  db: mock
+#  user: root
+#  password: guowenhe
