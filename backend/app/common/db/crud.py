@@ -1,6 +1,6 @@
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 from pydantic import BaseModel
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from .models import Base
 from sqlalchemy.sql import select, update, delete, insert
 from fastapi.encoders import jsonable_encoder
@@ -29,6 +29,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     #     model_obj = result.scalars().first()
     #     return model_obj
 
+    async def paginate(self, db: AsyncSession, ):
+        pass
+
     # async def create(self, db: Session, obj_in: SchemaType) -> Optional[SchemaType]:
     #     insert_data = obj_in.dict()
     #     del insert_data['id']
@@ -40,7 +43,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     #     await db.refresh(db_obj)
     #     return self.schema.from_orm(db_obj)
 
-    async def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
+    async def create(self, db: AsyncSession, *, obj_in: CreateSchemaType) -> ModelType:
         obj_in_data = jsonable_encoder(obj_in)
         db_obj = self.model(**obj_in_data)  # type: ignore
         db.add(db_obj)

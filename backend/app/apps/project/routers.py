@@ -16,9 +16,10 @@ router = APIRouter(
 from typing import List
 
 
-@router.post('/get', name='获取项目列表', response_model=List[schemas.Project])
-async def project_get():
-    pass
+@router.post('/get', name='获取项目列表', response_model=schemas.ProjectInDBList)
+async def project_get(query: schemas.ProjectList, db: AsyncSession = Depends(get_db)):
+    pages = await crud.project.get_pages(db, query)
+    return pages
 
 
 @router.post('/create', name='创建项目', response_model=schemas.Project)

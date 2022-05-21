@@ -1,12 +1,12 @@
 from typing import Optional, Union, Dict, List
 from pydantic import BaseModel, Field
 from common.schemas import BaseDBSchema
-from pydantic import BaseModel
+from common.db.ext import PageReqSchema, PageResSchema
 
 
 class ProjectBase(BaseModel):
     project_name: str
-    desc: str = Field(None)
+    remarks: str = Field(None)
 
 
 class ProjectCreate(ProjectBase):
@@ -17,14 +17,26 @@ class ProjectUpdate(ProjectBase):
     pass
 
 
-class ProjectInDBBase(BaseDBSchema):
+class ProjectList(PageReqSchema):
+    project_name: str = Field(None, description='项目名称-模糊查询')
+
+
+
+""""""
+
+
+class ProjectInDBBase(BaseDBSchema, ProjectBase):
     class Config:
         orm_mode = True
 
 
 # Additional properties to return via API
-class Project(ProjectInDBBase, ProjectBase):
+class Project(ProjectInDBBase):
     pass
+
+
+class ProjectInDBList(PageResSchema):
+    items: List[Project]
 
 
 # Properties properties stored in DB
