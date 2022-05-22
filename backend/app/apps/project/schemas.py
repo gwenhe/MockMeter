@@ -5,21 +5,25 @@ from common.db.ext import PageReqSchema, PageResSchema
 
 
 class ProjectBase(BaseModel):
-    project_name: str
+    project_name: str = Field(None)
     remarks: str = Field(None)
 
 
 class ProjectCreate(ProjectBase):
-    pass
+    project_name: str = Field(...)
 
 
-class ProjectUpdate(ProjectBase):
-    pass
+class ProjectUpdate(BaseModel):
+    project_id: int = Field(...)
+    project_data: ProjectBase = Field(...)
+
+
+class ProjectDelete(BaseModel):
+    project_id: str = Field(...)
 
 
 class ProjectList(PageReqSchema):
     project_name: str = Field(None, description='项目名称-模糊查询')
-
 
 
 """"""

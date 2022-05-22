@@ -23,14 +23,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self.model = model
         # self.schema = schema
 
-    # async def get(self, db: Session, id: Any) -> Optional[SchemaType]:
-    #     stmt = select(self.model).where(self.model.id == id)
-    #     result = await db.execute(stmt)
-    #     model_obj = result.scalars().first()
-    #     return model_obj
-
-    async def paginate(self, db: AsyncSession, ):
-        pass
+    async def get(self, db: AsyncSession, id: Any) -> Optional[ModelType]:
+        stmt = select(self.model).where(self.model.id == id)
+        result = await db.execute(stmt)
+        return result.scalars().first()
 
     # async def create(self, db: Session, obj_in: SchemaType) -> Optional[SchemaType]:
     #     insert_data = obj_in.dict()
@@ -51,19 +47,44 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         await db.refresh(db_obj)
         return db_obj
 
-    # async def remove(self, db: Session, id: int) -> None:
-    #     stmt = delete(self.model).where(self.model.id == id)
-    #     await db.execute(stmt)
-    #     await db.commit()
-    #
-    # async def update(self, db: Session, id: Any, obj_in: SchemaType) -> None:
+    async def delete(self, db: AsyncSession, id: int):
+        stmt = delete(self.model).where(self.model.id == id)
+        await db.execute(stmt)
+        await db.commit()
+
+    async def update(self, db: AsyncSession, id: Any, obj_in: Union[UpdateSchemaType, Dict[str, Any]]) -> None:
+        if isinstance(obj_in, dict):
+            update_data = obj_in
+        else:
+            update_data = obj_in.dict(exclude_unset=True)
+        stmt = update(self.model).where(self.model.id == id, self.model.is_del == 0).values(update_data)
+        await db.execute(stmt)
+        await db.commit()
+
+    # async def update(self, db: AsyncSession, id: Any, db_obj: ModelType,
+    #                  obj_in: Union[UpdateSchemaType, Dict[str, Any]]) -> None:
     #     obj_data = obj_in.dict()
     #     update_data = {}
     #     del obj_data['id']
     #     for field in obj_data:
     #         value = obj_data.get(field)
-    #         if value is not None:
-    #             update_data[field] = value
+    #     if value is not None:
+    #         update_data[field] = value
     #     stmt = update(self.model).where(self.model.id == id).values(update_data)
     #     await db.execute(stmt)
     #     await db.commit()
+    async def get_correct(self, db: AsyncSession, id: Any) -> Optional[ModelType]:
+        """
+        过滤未删除的状态
+        """
+        stmt = select(self.model).where(self.model.id == id, self.model.is_del == 0)
+        result = await db.execute(stmt)
+        return result.scalars().first()
+
+    async def remove(self, db: AsyncSession, id: int) -> None:
+        """
+        伪删除
+        """
+        stmt = update(self.model).where(self.model.id == id).values(is_del=1)
+        await db.execute(stmt)
+        await db.commit()

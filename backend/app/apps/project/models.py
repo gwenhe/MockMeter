@@ -16,3 +16,5 @@ class MockService(BaseModel, TimeRecordModelMixin):
     __table_args__ = ({'comment': 'mock服务'})
     service_name = Column(String(200), comment='服务名称')
     remarks = Column(String(2000), comment='项目描述')
+
+
