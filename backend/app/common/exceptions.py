@@ -2,6 +2,8 @@ import traceback
 
 from fastapi import Request, status
 from fastapi.responses import ORJSONResponse
+from fastapi.exceptions import RequestValidationError
+
 from .ext import app
 from .http import code, ResponseSchema
 
@@ -25,6 +27,12 @@ async def unicorn_exception_handler(request: Request, exc: HTTPException):
         content=ResponseSchema(code=exc.code, msg=exc.msg).dict(),
         headers=exc.headers,
     )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_error_handler(request: Request, exc: RequestValidationError):
+    msg = ''
+    print(exc.errors())
 
 
 @app.exception_handler(Exception)

@@ -10,5 +10,5 @@ from . import router
 
 
 @router.post('/create_service')
-def create_service() -> Any:
-    pass
+def create_service(test: schemas.Test) -> Any:
+    return test
