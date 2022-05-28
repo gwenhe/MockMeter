@@ -58,22 +58,24 @@ class ServiceBase(BaseModel):
     remarks: str = Field(None)
 
 
+from pydantic import BaseModel, validator
+
+
 class Test(BaseModel):
     # 必传字段
-    # service1: str = Field(..., max_length=5)
+    service1: str = Field(..., max_length=5, description='我是中文备注', title='我是标题')
     # 非必传
-    service2: str = Field(None)
+    service2: str = Field(...)
     # 长度限制
     service3: str = Field(None)
     # 枚举
-    #
     remarks: str = Field(None)
+    _normalize_service1 = validator('service1')
 
-    class Config:
-        max_anystr_length = 10
-        error_msg_templates = {
-            'value_error.any_str.max_length': '长度:{limit_value}',
-        }
-
+    # class Config:
+    #     max_anystr_length = 10
+    #     error_msg_templates = {
+    #         'value_error.any_str.max_length': '长度:{limit_value}',
+    #     }
 
 # Test(service3='23982893823982398239')

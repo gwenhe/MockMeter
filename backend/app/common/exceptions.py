@@ -31,8 +31,18 @@ async def unicorn_exception_handler(request: Request, exc: HTTPException):
 
 @app.exception_handler(RequestValidationError)
 async def validation_error_handler(request: Request, exc: RequestValidationError):
-    msg = ''
-    print(exc.errors())
+    errors = exc.errors()
+    print(errors)
+    for i in errors:
+        error_type = i['type']
+        print(error_type)
+        field = errors[0].get('loc', ['unknown'])[-1]
+        print(field)
+    content = ResponseSchema(code=code.CODE_422_UNPROCESSABLE_ENTITY, msg=default_exception_msg, data=errors).dict()
+    return ORJSONResponse(
+        status_code=status.HTTP_200_OK,
+        content=content,
+    )
 
 
 @app.exception_handler(Exception)

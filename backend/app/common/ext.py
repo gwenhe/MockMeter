@@ -2,6 +2,7 @@
 解决循环导入问题
 """
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(docs_url=None, redoc_url=None)
 
@@ -10,15 +11,6 @@ app = FastAPI(docs_url=None, redoc_url=None)
 async def hello():
     return 'Hello,MockMeter'
 
-
-from fastapi.middleware.cors import CORSMiddleware
-
-origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:8000",
-]
 
 app.add_middleware(
     CORSMiddleware,
